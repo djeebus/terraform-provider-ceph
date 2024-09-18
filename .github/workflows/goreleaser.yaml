@@ -1,7 +1,9 @@
 name: goreleaser
 
 on:
-  create:
+  push:
+    tags:
+      - '*'
 
 jobs:
   goreleaser:
