@@ -1,3 +1,4 @@
+version: 2
 before:
   hooks:
     - go mod tidy
@@ -41,7 +42,6 @@ release:
     - glob: 'terraform-registry-manifest.json'
       name_template: '{{ .ProjectName }}_{{ .Version }}_manifest.json'
 changelog:
-  skip: false
   sort: asc
 gitlab_urls:
   api: https://gitlab.cern.ch/api/v4/
