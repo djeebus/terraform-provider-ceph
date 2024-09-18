@@ -4,12 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"strings"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -147,20 +143,8 @@ func resourceAuthRead(ctx context.Context, d *schema.ResourceData, meta interfac
 		return diag.Errorf("Error resource_auth unable to create get JSON command: %s", err)
 	}
 
-	var buf []byte
-	err = retry.RetryContext(ctx, time.Second*30, func() *retry.RetryError {
-		buf, _, err = conn.MonCommand(command)
-		if err != nil {
-			if strings.Contains(err.Error(), "-110") {
-				tflog.Info(ctx, "received a timeout, retrying")
-				return retry.RetryableError(err)
-			}
-
-			return retry.NonRetryableError(err)
-		}
-		return nil
-	})
-	if err == nil {
+	buf, _, err := conn.MonCommand(command)
+	if err != nil {
 		return diag.Errorf("Error resource_auth on get command: %s", err)
 	}
 
